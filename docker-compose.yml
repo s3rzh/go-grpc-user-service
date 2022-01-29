@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-app
+    command: ./wait-for-postgres.sh pgdb ./app
+    ports:
+      - 8080:8080
+    depends_on:
+      - pgdb
+    environment:
+      - DB_PASSWORD=qwerty
+
+  pgdb:
+    restart: always
+    image: postgres:13
+    volumes:
+      - ./.data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=postgres
+    ports:
+      - 5434:5432

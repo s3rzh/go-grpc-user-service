@@ -1,0 +1,19 @@
+port: "8080"
+
+db:
+    username: "postgres"
+    password: "qwerty"
+    host: "pgdb"
+    port: "5432"
+    name: "postgres"
+    sslmode: "disable"
+
+messages:
+    responses:
+        added_successfully: "пользователь успешно добавлен"    
+        removed_successfully: "пользователь успешно удален"    
+    errors:
+        default: "неизвестная ошибка"
+        invalid_email: "неверный формат поля email"
+        invalid_age: "неверный формат поля age"
+        already_exists: "пользователь с таким email уже существует"

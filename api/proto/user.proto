@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "/api";
+
+import "validate/validate.proto";
+
+service UserManagement{
+    rpc CreateUser(User) returns (UserResponse){}
+    rpc GetUsers(EmptyParams) returns (UsersResponse){}
+    rpc DeleteUser(UserEmail) returns (UserResponse){}
+}
+
+message User{
+    string email = 1 [(validate.rules).string.email = true];
+    uint32 age = 2 [(validate.rules).uint32 = {gte: 18,  lte: 120}];
+}
+
+message UserResponse{
+    string msg = 1;
+}
+
+message UsersResponse{
+    repeated User users = 1;
+}
+
+message UserEmail{
+    string email = 1 [(validate.rules).string.email = true]; 
+}
+
+message EmptyParams {}
