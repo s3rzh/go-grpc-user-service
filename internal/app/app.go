@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/s3rzh/go-grpc-user-service/internal/config"
@@ -13,7 +14,7 @@ func Run(configPath string) {
 		log.Fatalf("error initializing configs: %s", err.Error())
 	}
 
-	log.Printf(" hello from app!%+v", cfg)
+	//log.Printf(" hello from app!%+v", cfg)
 
 	srv := new(server.Server)
 
@@ -22,5 +23,13 @@ func Run(configPath string) {
 			log.Fatalf("error running server: %s", err.Error())
 		}
 	}()
-	log.Println("END!")
+
+	// if err := srv.Run(cfg.Port); err != nil {
+	// 	log.Fatalf("error running server: %s", err.Error())
+	// }
+
+	cn := make(chan struct{}, 1)
+	<-cn
+
+	fmt.Println("App end!")
 }
