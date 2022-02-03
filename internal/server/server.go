@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	usrv "github.com/s3rzh/go-grpc-user-service/internal/handler/grpc"
+	usr "github.com/s3rzh/go-grpc-user-service/internal/handler/grpc"
 	"github.com/s3rzh/go-grpc-user-service/pkg/api"
 	"google.golang.org/grpc"
 )
@@ -13,7 +13,7 @@ type Server struct {
 	listener net.Listener
 }
 
-func (s *Server) Run(port string) error {
+func (s *Server) Run(port string, userServer *usr.UserManagementServer) error {
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		return err
@@ -22,7 +22,7 @@ func (s *Server) Run(port string) error {
 	s.listener = ln
 
 	grpcServer := grpc.NewServer()
-	userServer := &usrv.UserManagementServer{}
+	//userServer := usr.NewUserManagementServer()
 
 	api.RegisterUserManagementServer(grpcServer, userServer)
 
@@ -31,10 +31,13 @@ func (s *Server) Run(port string) error {
 		return err
 	}
 
-	fmt.Println("Server started2!")
 	return nil
 }
 
-func (s *Server) Stop() {
-	s.listener.Close()
+func (s *Server) Stop() error {
+	err := s.listener.Close()
+	if err != nil {
+		return err
+	}
+	return nil
 }

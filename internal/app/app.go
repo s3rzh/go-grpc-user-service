@@ -5,7 +5,10 @@ import (
 	"log"
 
 	"github.com/s3rzh/go-grpc-user-service/internal/config"
+	"github.com/s3rzh/go-grpc-user-service/internal/handler"
+	"github.com/s3rzh/go-grpc-user-service/internal/repository"
 	"github.com/s3rzh/go-grpc-user-service/internal/server"
+	"github.com/s3rzh/go-grpc-user-service/internal/service"
 )
 
 func Run(configPath string) {
@@ -16,10 +19,16 @@ func Run(configPath string) {
 
 	//log.Printf(" hello from app!%+v", cfg)
 
-	srv := new(server.Server)
+	repository := repository.NewRepository()
+	service := service.NewService(repository)
+	//userServer := grpc.NewUserManagementServer(service)
 
+	handler := handler.NewHandler(service)
+	//userServer1.Service
+
+	srv := new(server.Server)
 	go func() {
-		if err := srv.Run(cfg.Port); err != nil {
+		if err := srv.Run(cfg.Port, handler.Service); err != nil {
 			log.Fatalf("error running server: %s", err.Error())
 		}
 	}()
@@ -31,5 +40,5 @@ func Run(configPath string) {
 	cn := make(chan struct{}, 1)
 	<-cn
 
-	fmt.Println("App end!")
+	fmt.Println("app ended..")
 }

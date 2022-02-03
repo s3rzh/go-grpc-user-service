@@ -13,9 +13,6 @@ git clone git@gitlab.com:dev-area/horse-exchange.git
 
 Перейти в папку проекта и cоздать в корне файл .env
 
-Добавить в него
-DB_PASSWORD=qwerty
-
 В корне проекта, выполнить след. команды:
 docker-compose up -d --build horse-exchange-app
 
@@ -27,10 +24,11 @@ docker run --network host migrator -path=./migrations/ -database "postgres://pos
 
 В Postman
 
-открыть grpc
+Открыть New -> gRPC Request указать locahost:8080 импортировать user.proto и выбрать метод
 
+В качестве клиента использовал Postman (поэтому всегда возврашал nil в ответе ошибки)
 
-
+P.S. тк задание тестовое, пароли оставил в файле конфига.
 
 Для отката миграций
 docker run --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" down -all
