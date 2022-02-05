@@ -17,7 +17,11 @@ func NewUserGRPCService(r *repository.Repository) *UserGRPCService {
 
 func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (*api.UserResponse, error) {
 	// check for cache
-	// return s.rep.CreateUser()
+
+	_, err := s.rep.CreateUser(ctx, u)
+	if err != nil {
+		return nil, nil
+	}
 	return nil, nil
 }
 

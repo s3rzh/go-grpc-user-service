@@ -23,7 +23,7 @@ func (s *UserManagementServer) CreateUser(ctx context.Context, r *api.User) (*ap
 		return &api.UserResponse{Msg: err.Error()}, nil
 	}
 
-	// s.Service.CreateUser()
+	s.Service.CreateUser(ctx, r)
 
 	return &api.UserResponse{Msg: "user 18 added!"}, nil
 }

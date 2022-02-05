@@ -6,9 +6,9 @@ import (
 )
 
 type Handler struct {
-	Service *grpc.UserManagementServer
+	Server *grpc.UserManagementServer
 }
 
 func NewHandler(service *service.Service) *Handler {
-	return &Handler{Service: grpc.NewUserManagementServer(service)}
+	return &Handler{Server: grpc.NewUserManagementServer(service)}
 }

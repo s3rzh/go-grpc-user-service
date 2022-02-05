@@ -5,15 +5,8 @@ ENV GOPATH=/
 
 COPY ./ ./
 
-# install psql
-RUN apt-get update
-RUN apt-get -y install postgresql-client
-
-# make wait-for-postgres.sh executable
-RUN chmod +x wait-for-postgres.sh
-
-# build go app
+# build go logger
 RUN go mod download
-RUN go build -o horse-exchange-app ./cmd/main.go
+RUN go build -o logger ./cmd/logger/main.go
 
-CMD ["./horse-exchange-app"]
+CMD ["./logger"]

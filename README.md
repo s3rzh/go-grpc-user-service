@@ -9,17 +9,17 @@
 ПО: Git, Docker, Postman
 
 Клонировать проект:
-git clone git@gitlab.com:dev-area/horse-exchange.git
+git clone https://github.com/s3rzh/go-grpc-user-service.git
 
-Перейти в папку проекта и cоздать в корне файл .env
+Перейти в папку проекта.
 
 В корне проекта, выполнить след. команды:
-docker-compose up -d --build horse-exchange-app
+docker-compose up -d --build app
 
-Создание образа для миграций
+Создание образа для миграций.
 docker build -t migrator ./api/migrator
 
-Запустить миграции
+Запустить миграции.
 docker run --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" up
 
 В Postman
@@ -29,6 +29,8 @@ docker run --network host migrator -path=./migrations/ -database "postgres://pos
 В качестве клиента использовал Postman (поэтому всегда возврашал nil в ответе ошибки)
 
 P.S. тк задание тестовое, пароли оставил в файле конфига.
+
+
 
 Для отката миграций
 docker run --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" down -all
