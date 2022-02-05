@@ -2,7 +2,6 @@ package postgresql
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/s3rzh/go-grpc-user-service/pkg/api"
@@ -16,29 +15,47 @@ func NewUserPostgres(db *pgx.Conn) *UserPostgres {
 	return &UserPostgres{db: db}
 }
 
-func (s *UserPostgres) CreateUser(ctx context.Context, u *api.User) (*api.UserResponse, error) {
-	age := 22
-	email := "123@g.com"
-	var id int
+func (s *UserPostgres) CreateUser(ctx context.Context, u *api.User) (int, error) {
+	var userId int
 
-	row := s.db.QueryRow(context.Background(),
+	row := s.db.QueryRow(ctx,
 		"INSERT INTO users (age, email) VALUES ($1, $2) RETURNING id",
-		age, email)
+		u.Age, u.Email)
 
-	err := row.Scan(&id)
+	err := row.Scan(&userId)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	fmt.Println(id)
-
-	return nil, nil
+	return userId, nil
 }
 
 func (s *UserPostgres) GetUsers(ctx context.Context) (*api.UsersResponse, error) {
 	return nil, nil
 }
 
-func (s *UserPostgres) DeleteUser(ctx context.Context, e *api.UserEmail) (*api.UserResponse, error) {
-	return nil, nil
+func (s *UserPostgres) DeleteUser(ctx context.Context, e string) error {
+	_, err := s.db.Exec(ctx, "DELETE FROM users WHERE email = $1", e)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserPostgres) CheckUserForExists(ctx context.Context, e string) (bool, error) {
+	var count int
+	row := s.db.QueryRow(ctx,
+		"SELECT 1 FROM users WHERE email = $1",
+		e)
+
+	err := row.Scan(&count)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
 }

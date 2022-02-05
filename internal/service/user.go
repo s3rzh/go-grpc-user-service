@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/s3rzh/go-grpc-user-service/internal/repository"
 	"github.com/s3rzh/go-grpc-user-service/pkg/api"
@@ -15,20 +16,44 @@ func NewUserGRPCService(r *repository.Repository) *UserGRPCService {
 	return &UserGRPCService{rep: r}
 }
 
-func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (*api.UserResponse, error) {
+func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, error) {
 	// check for cache
 
-	_, err := s.rep.CreateUser(ctx, u)
+	exists, err := s.rep.CheckUserForExists(ctx, u.Email)
 	if err != nil {
-		return nil, nil
+		return 0, err
 	}
-	return nil, nil
+
+	if exists {
+		return 0, errors.New("user already exists")
+	}
+
+	userId, err := s.rep.CreateUser(ctx, u)
+	if err != nil {
+		return 0, err
+	}
+	return userId, nil
 }
 
 func (s *UserGRPCService) GetUsers(ctx context.Context) (*api.UsersResponse, error) {
 	return nil, nil
 }
 
-func (s *UserGRPCService) DeleteUser(ctx context.Context, e *api.UserEmail) (*api.UserResponse, error) {
-	return nil, nil
+func (s *UserGRPCService) DeleteUser(ctx context.Context, ue *api.UserEmail) error {
+
+	exists, err := s.rep.CheckUserForExists(ctx, ue.Email)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		return errors.New("email does not exist")
+	}
+
+	err = s.rep.DeleteUser(ctx, ue.Email)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

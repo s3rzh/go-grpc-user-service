@@ -8,9 +8,9 @@ import (
 )
 
 type UserService interface {
-	CreateUser(context.Context, *api.User) (*api.UserResponse, error)
+	CreateUser(context.Context, *api.User) (int, error)
 	GetUsers(context.Context) (*api.UsersResponse, error)
-	DeleteUser(context.Context, *api.UserEmail) (*api.UserResponse, error)
+	DeleteUser(context.Context, *api.UserEmail) error
 }
 
 type Service struct {
