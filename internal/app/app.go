@@ -38,7 +38,7 @@ func Run(configPath string) {
 
 	repository := repository.NewRepository(db)
 	service := service.NewService(repository)
-	handler := handler.NewHandler(service)
+	handler := handler.NewHandler(service, cfg.Messages)
 	//userServer := grpc.NewUserManagementServer(service)
 
 	srv := new(server.Server)

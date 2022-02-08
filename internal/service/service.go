@@ -10,7 +10,7 @@ import (
 type UserService interface {
 	CreateUser(context.Context, *api.User) (int, error)
 	GetUsers(context.Context) (*api.UsersResponse, error)
-	DeleteUser(context.Context, *api.UserEmail) error
+	DeleteUser(context.Context, *api.UserEmail) (int, error)
 }
 
 type Service struct {

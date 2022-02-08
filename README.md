@@ -24,7 +24,22 @@ docker run --network host migrator -path=./migrations/ -database "postgres://pos
 
 В Postman
 
-Открыть New -> gRPC Request указать locahost:8080 импортировать user.proto и выбрать метод
+Открыть New -> gRPC Request указать locahost:8080, импортировать user.proto, выбрать метод и сгенерироваться сообщение в зависимости от выбранного метода автоматически (Generate Example Message) или вручную, например:
+для метода CreateUser:
+{
+    "age": 25,
+    "email": "my@eml.com"
+}
+
+для метода GetUsers (пустое сообщение):
+{}
+
+для метода DeleteUser:
+{
+    "email": "my@eml.com"
+}
+
+
 
 В качестве клиента использовал Postman (поэтому всегда возврашал nil в ответе ошибки)
 

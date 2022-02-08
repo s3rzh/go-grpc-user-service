@@ -10,10 +10,11 @@ db:
 
 messages:
     responses:
-        added_successfully: "пользователь успешно добавлен"    
-        removed_successfully: "пользователь успешно удален"    
+        added_successfully: "новый пользователь с id (#%d) успешно добавлен"    
+        removed_successfully: "пользователь с id (#%d) успешно удален"    
     errors:
         default: "неизвестная ошибка"
-        invalid_email: "неверный формат поля email"
-        invalid_age: "неверный формат поля age"
+        invalid_email: "неверный формат (username@example.com) поля email"
+        invalid_input_data: "неверный диапазон (от 18 до 120) поля age или формат (username@example.com) поля email"
         already_exists: "пользователь с таким email уже существует"
+        not_exists: "пользователь с таким email не существует"

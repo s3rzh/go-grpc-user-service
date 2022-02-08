@@ -28,10 +28,11 @@ type Responses struct {
 }
 
 type Errors struct {
-	Default       string `mapstructure:"default"`
-	InvalidEmail  string `mapstructure:"invalid_email"`
-	InvalidAge    string `mapstructure:"invalid_age"`
-	AlreadyExists string `mapstructure:"already_exists"`
+	Default          string `mapstructure:"default"`
+	InvalidEmail     string `mapstructure:"invalid_email"`
+	InvalidInputData string `mapstructure:"invalid_input_data"`
+	AlreadyExists    string `mapstructure:"already_exists"`
+	NotExists        string `mapstructure:"not_exists"`
 }
 
 func InitApp(configPath string) (*AppConfig, error) {

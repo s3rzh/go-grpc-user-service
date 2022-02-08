@@ -12,7 +12,7 @@ type UserRepository interface {
 	CreateUser(context.Context, *api.User) (int, error)
 	GetUsers(context.Context) (*api.UsersResponse, error)
 	DeleteUser(context.Context, string) error
-	CheckUserByEmail(context.Context, string) (bool, error)
+	GetUserIdByEmail(context.Context, string) (int, error)
 }
 
 type Repository struct {

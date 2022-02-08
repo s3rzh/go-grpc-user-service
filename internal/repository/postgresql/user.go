@@ -58,19 +58,19 @@ func (s *UserPostgres) DeleteUser(ctx context.Context, e string) error {
 	return nil
 }
 
-func (s *UserPostgres) CheckUserByEmail(ctx context.Context, e string) (bool, error) {
-	var count int
+func (s *UserPostgres) GetUserIdByEmail(ctx context.Context, e string) (int, error) {
+	var userId int
 	row := s.db.QueryRow(ctx,
-		"SELECT 1 FROM users WHERE email = $1",
+		"SELECT id FROM users WHERE email = $1",
 		e)
 
-	err := row.Scan(&count)
+	err := row.Scan(&userId)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return false, nil
+			return 0, nil
 		}
-		return false, err
+		return 0, err
 	}
 
-	return true, nil
+	return userId, nil
 }
