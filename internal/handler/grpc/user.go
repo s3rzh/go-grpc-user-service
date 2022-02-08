@@ -39,7 +39,12 @@ func (s *UserManagementServer) CreateUser(ctx context.Context, u *api.User) (*ap
 }
 
 func (s *UserManagementServer) GetUsers(ctx context.Context, r *api.EmptyParams) (*api.UsersResponse, error) {
-	return &api.UsersResponse{}, nil
+	users, err := s.Service.GetUsers(ctx)
+	if err != nil {
+		return nil, nil
+	}
+
+	return users, nil
 }
 
 func (s *UserManagementServer) DeleteUser(ctx context.Context, ue *api.UserEmail) (*api.UserResponse, error) {

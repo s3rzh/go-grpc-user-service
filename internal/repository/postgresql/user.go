@@ -31,7 +31,22 @@ func (s *UserPostgres) CreateUser(ctx context.Context, u *api.User) (int, error)
 }
 
 func (s *UserPostgres) GetUsers(ctx context.Context) (*api.UsersResponse, error) {
-	return nil, nil
+	var usersResponse api.UsersResponse
+	users, err := s.db.Query(ctx, "SELECT age, email FROM users")
+	if err != nil {
+		return nil, err
+	}
+
+	for users.Next() {
+		var u api.User
+		err := users.Scan(&u.Age, &u.Email)
+		if err != nil {
+			return nil, err
+		}
+		usersResponse.Users = append(usersResponse.Users, &u)
+	}
+
+	return &usersResponse, nil
 }
 
 func (s *UserPostgres) DeleteUser(ctx context.Context, e string) error {
@@ -43,7 +58,7 @@ func (s *UserPostgres) DeleteUser(ctx context.Context, e string) error {
 	return nil
 }
 
-func (s *UserPostgres) CheckUserForExists(ctx context.Context, e string) (bool, error) {
+func (s *UserPostgres) CheckUserByEmail(ctx context.Context, e string) (bool, error) {
 	var count int
 	row := s.db.QueryRow(ctx,
 		"SELECT 1 FROM users WHERE email = $1",

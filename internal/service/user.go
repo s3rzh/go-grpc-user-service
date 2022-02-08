@@ -19,7 +19,7 @@ func NewUserGRPCService(r *repository.Repository) *UserGRPCService {
 func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, error) {
 	// check for cache
 
-	exists, err := s.rep.CheckUserForExists(ctx, u.Email)
+	exists, err := s.rep.CheckUserByEmail(ctx, u.Email)
 	if err != nil {
 		return 0, err
 	}
@@ -36,12 +36,17 @@ func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, err
 }
 
 func (s *UserGRPCService) GetUsers(ctx context.Context) (*api.UsersResponse, error) {
-	return nil, nil
+	users, err := s.rep.GetUsers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (s *UserGRPCService) DeleteUser(ctx context.Context, ue *api.UserEmail) error {
 
-	exists, err := s.rep.CheckUserForExists(ctx, ue.Email)
+	exists, err := s.rep.CheckUserByEmail(ctx, ue.Email)
 	if err != nil {
 		return err
 	}
