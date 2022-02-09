@@ -5,16 +5,29 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-app
+    container_name: 'user_app'
     command: ./wait-for-postgres.sh pgdb ./app
     ports:
       - 8080:8080
     depends_on:
-      - redis
+      - rabbitmq
     environment:
       - DB_PASSWORD=qwerty
 
+  rabbitmq:
+    image: rabbitmq:3.9.13-management
+    container_name: 'user_rabbitmq'
+    ports:
+      - 5674:5672
+      - 15674:15672
+    depends_on:
+      - redis
+    volumes:
+      - ./.rabbitmq/data:/var/lib/rabbitmq
+
   redis:
     image: redis:6.2-alpine
+    container_name: 'user_redis'
     ports:
       - 6381:6379
     depends_on:
@@ -23,6 +36,7 @@ services:
   pgdb:
     restart: always
     image: postgres:13
+    container_name: 'user_pgdb'
     volumes:
       - ./.data:/var/lib/postgresql/data
     environment:

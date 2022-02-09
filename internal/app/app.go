@@ -16,6 +16,8 @@ import (
 	"github.com/s3rzh/go-grpc-user-service/pkg/cache"
 	"github.com/s3rzh/go-grpc-user-service/pkg/cache/redis"
 	"github.com/s3rzh/go-grpc-user-service/pkg/database/postgresql"
+	"github.com/s3rzh/go-grpc-user-service/pkg/queue"
+	"github.com/s3rzh/go-grpc-user-service/pkg/queue/rabbitmq"
 )
 
 func Run(configPath string) {
@@ -48,8 +50,18 @@ func Run(configPath string) {
 		log.Fatalf("failed to initialize cache: %s", err.Error())
 	}
 
+	queue, err := queue.NewQueue(rabbitmq.Config{
+		Host:     cfg.Queue.Host,
+		Port:     cfg.Queue.Port,
+		Username: cfg.Queue.Username,
+		Password: cfg.Queue.Password,
+	})
+	if err != nil {
+		log.Fatalf("failed to initialize queue: %s", err.Error())
+	}
+
 	repository := repository.NewRepository(db)
-	service := service.NewService(repository, cache)
+	service := service.NewService(repository, cache, queue)
 	handler := handler.NewHandler(service, cfg.Messages)
 
 	srv := new(server.Server)

@@ -6,6 +6,7 @@ type AppConfig struct {
 	Port     string `mapstructure:"port"`
 	DB       DB
 	Cache    Cache
+	Queue    Queue
 	Messages Messages
 }
 
@@ -23,6 +24,13 @@ type Cache struct {
 	Port     string `mapstructure:"port"`
 	Password string `mapstructure:"password"`
 	DB       int    `mapstructure:"db"`
+}
+
+type Queue struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }
 
 type Messages struct {

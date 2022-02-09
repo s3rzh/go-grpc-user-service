@@ -9,6 +9,7 @@ import (
 	"github.com/s3rzh/go-grpc-user-service/internal/repository"
 	"github.com/s3rzh/go-grpc-user-service/pkg/api"
 	"github.com/s3rzh/go-grpc-user-service/pkg/cache"
+	"github.com/s3rzh/go-grpc-user-service/pkg/queue"
 )
 
 const (
@@ -19,10 +20,11 @@ const (
 type UserGRPCService struct {
 	rep   *repository.Repository
 	cache cache.Cache
+	queue queue.Queue
 }
 
-func NewUserGRPCService(r *repository.Repository, cache cache.Cache) *UserGRPCService {
-	return &UserGRPCService{rep: r, cache: cache}
+func NewUserGRPCService(r *repository.Repository, cache cache.Cache, queue queue.Queue) *UserGRPCService {
+	return &UserGRPCService{rep: r, cache: cache, queue: queue}
 }
 
 func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, error) {
@@ -43,6 +45,11 @@ func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, err
 	}
 
 	_, err = s.cache.Delete(ctx, UserList)
+	if err != nil {
+		return 0, err
+	}
+
+	err = s.queue.Send("Hello!")
 	if err != nil {
 		return 0, err
 	}

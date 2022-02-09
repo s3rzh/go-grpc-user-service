@@ -49,3 +49,7 @@ P.S. тк задание тестовое, пароли оставил в фай
 
 Для отката миграций
 docker run --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" down -all
+
+админ панель RabbitMQ
+http://localhost:15674/
+guest/guest
