@@ -13,6 +13,8 @@ import (
 	"github.com/s3rzh/go-grpc-user-service/internal/repository"
 	"github.com/s3rzh/go-grpc-user-service/internal/server"
 	"github.com/s3rzh/go-grpc-user-service/internal/service"
+	"github.com/s3rzh/go-grpc-user-service/pkg/cache"
+	"github.com/s3rzh/go-grpc-user-service/pkg/cache/redis"
 	"github.com/s3rzh/go-grpc-user-service/pkg/database/postgresql"
 )
 
@@ -22,7 +24,7 @@ func Run(configPath string) {
 		log.Fatalf("error initializing configs: %s", err.Error())
 	}
 
-	//log.Printf(" hello from app!%+v", cfg)
+	//log.Printf("cfg %+v", cfg)
 
 	db, err := postgresql.NewPostgresDB(postgresql.Config{
 		Host:     cfg.DB.Host,
@@ -36,10 +38,19 @@ func Run(configPath string) {
 		log.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
+	cache, err := cache.NewCache(redis.Config{
+		Host:     cfg.Cache.Host,
+		Port:     cfg.Cache.Port,
+		Password: cfg.Cache.Password,
+		DB:       cfg.Cache.DB,
+	})
+	if err != nil {
+		log.Fatalf("failed to initialize cache: %s", err.Error())
+	}
+
 	repository := repository.NewRepository(db)
-	service := service.NewService(repository)
+	service := service.NewService(repository, cache)
 	handler := handler.NewHandler(service, cfg.Messages)
-	//userServer := grpc.NewUserManagementServer(service)
 
 	srv := new(server.Server)
 	fmt.Println("Started!")
@@ -48,10 +59,6 @@ func Run(configPath string) {
 			log.Fatalf("error running server: %s", err.Error())
 		}
 	}()
-
-	// if err := srv.Run(cfg.Port); err != nil {
-	// 	log.Fatalf("error running server: %s", err.Error())
-	// }
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)

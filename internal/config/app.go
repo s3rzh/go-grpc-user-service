@@ -5,6 +5,7 @@ import "github.com/spf13/viper"
 type AppConfig struct {
 	Port     string `mapstructure:"port"`
 	DB       DB
+	Cache    Cache
 	Messages Messages
 }
 
@@ -15,6 +16,13 @@ type DB struct {
 	Port     string `mapstructure:"port"`
 	Name     string `mapstructure:"name"`
 	SSLMode  string `mapstructure:"sslmode"`
+}
+
+type Cache struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	Password string `mapstructure:"password"`
+	DB       int    `mapstructure:"db"`
 }
 
 type Messages struct {

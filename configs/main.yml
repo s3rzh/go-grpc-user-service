@@ -8,6 +8,12 @@ db:
     name: "postgres"
     sslmode: "disable"
 
+cache:
+    host: "localhost"
+    port: "6381" #6379
+    password: ""
+    db: 0
+
 messages:
     responses:
         added_successfully: "новый пользователь с id (#%d) успешно добавлен"    

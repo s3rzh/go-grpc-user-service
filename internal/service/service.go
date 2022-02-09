@@ -5,6 +5,7 @@ import (
 
 	"github.com/s3rzh/go-grpc-user-service/internal/repository"
 	"github.com/s3rzh/go-grpc-user-service/pkg/api"
+	"github.com/s3rzh/go-grpc-user-service/pkg/cache"
 )
 
 type UserService interface {
@@ -17,8 +18,8 @@ type Service struct {
 	UserService
 }
 
-func NewService(rep *repository.Repository) *Service {
+func NewService(rep *repository.Repository, cache cache.Cache) *Service {
 	return &Service{
-		UserService: NewUserGRPCService(rep),
+		UserService: NewUserGRPCService(rep, cache),
 	}
 }

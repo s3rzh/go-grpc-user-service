@@ -2,21 +2,30 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"time"
 
+	redis "github.com/go-redis/redis/v8"
 	"github.com/s3rzh/go-grpc-user-service/internal/repository"
 	"github.com/s3rzh/go-grpc-user-service/pkg/api"
+	"github.com/s3rzh/go-grpc-user-service/pkg/cache"
+)
+
+const (
+	UserList       string        = "user:list"
+	ExperationTine time.Duration = 1 * time.Minute
 )
 
 type UserGRPCService struct {
-	rep *repository.Repository
+	rep   *repository.Repository
+	cache cache.Cache
 }
 
-func NewUserGRPCService(r *repository.Repository) *UserGRPCService {
-	return &UserGRPCService{rep: r}
+func NewUserGRPCService(r *repository.Repository, cache cache.Cache) *UserGRPCService {
+	return &UserGRPCService{rep: r, cache: cache}
 }
 
 func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, error) {
-	// check for cache
 	var userId int
 
 	userId, err := s.rep.GetUserIdByEmail(ctx, u.Email)
@@ -32,11 +41,38 @@ func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, err
 	if err != nil {
 		return 0, err
 	}
+
+	_, err = s.cache.Delete(ctx, UserList)
+	if err != nil {
+		return 0, err
+	}
+
 	return userId, nil
 }
 
 func (s *UserGRPCService) GetUsers(ctx context.Context) (*api.UsersResponse, error) {
-	users, err := s.rep.GetUsers(ctx)
+	var users *api.UsersResponse
+
+	cached, err := s.cache.Get(ctx, UserList)
+	if err != redis.Nil {
+		err := json.Unmarshal([]byte(cached), &users)
+		if err != nil {
+			return nil, err
+		}
+		return users, nil
+	}
+
+	users, err = s.rep.GetUsers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	bytes, err := json.Marshal(users)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.cache.Set(ctx, UserList, bytes, ExperationTine)
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +92,11 @@ func (s *UserGRPCService) DeleteUser(ctx context.Context, ue *api.UserEmail) (in
 	}
 
 	err = s.rep.DeleteUser(ctx, ue.Email)
+	if err != nil {
+		return 0, err
+	}
+
+	_, err = s.cache.Delete(ctx, UserList)
 	if err != nil {
 		return 0, err
 	}
