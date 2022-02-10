@@ -51,10 +51,11 @@ func Run(configPath string) {
 	}
 
 	queue, err := queue.NewQueue(rabbitmq.Config{
-		Host:     cfg.Queue.Host,
-		Port:     cfg.Queue.Port,
-		Username: cfg.Queue.Username,
-		Password: cfg.Queue.Password,
+		Host:      cfg.Queue.Host,
+		Port:      cfg.Queue.Port,
+		Username:  cfg.Queue.Username,
+		Password:  cfg.Queue.Password,
+		QueueName: cfg.Queue.QueueName,
 	})
 	if err != nil {
 		log.Fatalf("failed to initialize queue: %s", err.Error())

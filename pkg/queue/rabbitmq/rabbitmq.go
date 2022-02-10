@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
+	Host      string
+	Port      string
+	Username  string
+	Password  string
+	QueueName string
 }
 
 type Rabbitmq struct {
@@ -32,7 +33,7 @@ func NewRabbitmq(cfg Config) (*Rabbitmq, error) {
 	}
 
 	q, err := ch.QueueDeclare(
-		"UserQueue",
+		cfg.QueueName,
 		false,
 		false,
 		false,
@@ -47,15 +48,15 @@ func NewRabbitmq(cfg Config) (*Rabbitmq, error) {
 
 }
 
-func (r *Rabbitmq) Send(msg string) error {
+func (r *Rabbitmq) Send(msg []byte) error {
 	err := r.ch.Publish(
 		"",
-		"UserQueue",
+		r.q.Name,
 		false,
 		false,
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        []byte(msg),
+			Body:        msg,
 		},
 	)
 	if err != nil {
@@ -63,6 +64,23 @@ func (r *Rabbitmq) Send(msg string) error {
 	}
 
 	return nil
+}
+
+func (r *Rabbitmq) Receive() (<-chan amqp.Delivery, error) {
+	msgs, err := r.ch.Consume(
+		r.q.Name,
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return msgs, nil
 }
 
 func (r *Rabbitmq) Close() error {

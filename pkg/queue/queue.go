@@ -2,10 +2,12 @@ package queue
 
 import (
 	"github.com/s3rzh/go-grpc-user-service/pkg/queue/rabbitmq"
+	"github.com/streadway/amqp"
 )
 
 type Queue interface {
-	Send(string) error
+	Send([]byte) error
+	Receive() (<-chan amqp.Delivery, error)
 	Close() error
 }
 

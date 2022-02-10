@@ -27,10 +27,11 @@ type Cache struct {
 }
 
 type Queue struct {
-	Host     string `mapstructure:"host"`
-	Port     string `mapstructure:"port"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
+	Host      string `mapstructure:"host"`
+	Port      string `mapstructure:"port"`
+	Username  string `mapstructure:"username"`
+	Password  string `mapstructure:"password"`
+	QueueName string `mapstructure:"queuename"`
 }
 
 type Messages struct {

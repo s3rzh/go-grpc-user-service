@@ -6,6 +6,7 @@ import (
 	"time"
 
 	redis "github.com/go-redis/redis/v8"
+	"github.com/s3rzh/go-grpc-user-service/internal/entity"
 	"github.com/s3rzh/go-grpc-user-service/internal/repository"
 	"github.com/s3rzh/go-grpc-user-service/pkg/api"
 	"github.com/s3rzh/go-grpc-user-service/pkg/cache"
@@ -49,7 +50,12 @@ func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, err
 		return 0, err
 	}
 
-	err = s.queue.Send("Hello!")
+	data, err := json.Marshal(&entity.Data{ID: userId, Email: u.Email})
+	if err != nil {
+		return 0, err
+	}
+
+	err = s.queue.Send(data)
 	if err != nil {
 		return 0, err
 	}

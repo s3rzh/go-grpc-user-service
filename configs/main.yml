@@ -19,6 +19,7 @@ queue:
     port: "5674" #5672
     username: "guest"
     password: "guest"
+    queuename: "UserQueue"
 
 messages:
     responses:
