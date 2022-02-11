@@ -1,6 +1,6 @@
 package entity
 
 type Data struct {
-	ID    int
-	Email string
+	ID    uint8  `json:"id"`
+	Email string `json:"email"`
 }

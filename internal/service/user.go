@@ -50,7 +50,7 @@ func (s *UserGRPCService) CreateUser(ctx context.Context, u *api.User) (int, err
 		return 0, err
 	}
 
-	data, err := json.Marshal(&entity.Data{ID: userId, Email: u.Email})
+	data, err := json.Marshal(&entity.Data{ID: uint8(userId), Email: u.Email})
 	if err != nil {
 		return 0, err
 	}

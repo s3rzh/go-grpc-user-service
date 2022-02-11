@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -25,8 +24,6 @@ func Run(configPath string) {
 	if err != nil {
 		log.Fatalf("error initializing configs: %s", err.Error())
 	}
-
-	//log.Printf("cfg %+v", cfg)
 
 	db, err := postgresql.NewPostgresDB(postgresql.Config{
 		Host:     cfg.DB.Host,
@@ -66,7 +63,6 @@ func Run(configPath string) {
 	handler := handler.NewHandler(service, cfg.Messages)
 
 	srv := new(server.Server)
-	fmt.Println("Started!")
 	go func() {
 		if err := srv.Run(cfg.Port, handler.Server); err != nil {
 			log.Fatalf("error running server: %s", err.Error())
@@ -86,5 +82,4 @@ func Run(configPath string) {
 		log.Fatalf("error occured on db connection close: %s", err.Error())
 	}
 
-	//fmt.Println("app ended..")
 }

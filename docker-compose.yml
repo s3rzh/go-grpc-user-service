@@ -10,9 +10,26 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - rabbitmq
+      - clickhouse
     environment:
       - DB_PASSWORD=qwerty
+
+  clickhouse:
+    image: yandex/clickhouse-server
+    hostname: user_clickhouse
+    container_name: 'user_clickhouse'
+    ports:
+      - 8125:8123
+      - 9002:9000
+    volumes:
+      - ./.clickhouse/data:/var/lib/clickhouse
+      - ./api/clickhouse/migrations:/var/lib/clickhouse/migrations
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    depends_on:
+      - rabbitmq
 
   rabbitmq:
     image: rabbitmq:3.9.13-management
@@ -36,9 +53,9 @@ services:
   pgdb:
     restart: always
     image: postgres:13
-    container_name: 'user_pgdb'
+    container_name: 'user_postgres'
     volumes:
-      - ./.data:/var/lib/postgresql/data
+      - ./.postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=qwerty

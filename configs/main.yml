@@ -21,6 +21,13 @@ queue:
     password: "guest"
     queuename: "UserQueue"
 
+clickhouse:
+    host: "127.0.0.1"
+    port: "9002" #9000
+    username: "default"
+    dbname: "db_user"
+    password: ""
+
 messages:
     responses:
         added_successfully: "новый пользователь с id (#%d) успешно добавлен"    

@@ -19,8 +19,11 @@ docker-compose up -d --build app
 Создание образа для миграций.
 docker build -t migrator ./api/migrator
 
-Запустить миграции.
-docker run --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" up
+Запустить Postgres миграции.
+docker run --rm --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" up
+
+Запустить Clickhouse миграции.
+docker exec user_clickhouse bash -c "clickhouse-client -mn < /var/lib/clickhouse/migrations/1_init_schema.up.sql"
 
 В Postman
 
@@ -47,8 +50,11 @@ P.S. тк задание тестовое, пароли оставил в фай
 
 
 
-Для отката миграций
-docker run --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" down -all
+Откат Postgres миграций
+docker run --rm --network host migrator -path=./migrations/ -database "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable" down -all
+
+Откат Clickhouse миграций.
+docker exec user_clickhouse bash -c "clickhouse-client -mn < /var/lib/clickhouse/migrations/1_init_schema.down.sql"
 
 админ панель RabbitMQ
 http://localhost:15674/

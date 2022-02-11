@@ -3,11 +3,12 @@ package config
 import "github.com/spf13/viper"
 
 type AppConfig struct {
-	Port     string `mapstructure:"port"`
-	DB       DB
-	Cache    Cache
-	Queue    Queue
-	Messages Messages
+	Port       string `mapstructure:"port"`
+	DB         DB
+	Cache      Cache
+	Queue      Queue
+	ClickHouse ClickHouse
+	Messages   Messages
 }
 
 type DB struct {
@@ -32,6 +33,14 @@ type Queue struct {
 	Username  string `mapstructure:"username"`
 	Password  string `mapstructure:"password"`
 	QueueName string `mapstructure:"queuename"`
+}
+
+type ClickHouse struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	Username string `mapstructure:"username"`
+	DBName   string `mapstructure:"dbname"`
+	Password string `mapstructure:"password"`
 }
 
 type Messages struct {

@@ -22,7 +22,6 @@ func (s *Server) Run(port string, userServer *usr.UserManagementServer) error {
 	s.listener = ln
 
 	grpcServer := grpc.NewServer()
-	//userServer := usr.NewUserManagementServer()
 
 	api.RegisterUserManagementServer(grpcServer, userServer)
 
