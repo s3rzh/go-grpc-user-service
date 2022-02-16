@@ -23,7 +23,6 @@ const (
 )
 
 func Run(configPath string) {
-	log.Printf("Logger start!")
 	cfg, err := config.InitApp(configPath)
 	if err != nil {
 		log.Fatalf("error initializing configs: %s", err.Error())

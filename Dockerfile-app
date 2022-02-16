@@ -1,9 +1,9 @@
-FROM golang:latest
+FROM golang:latest AS builder
 
-RUN go version
-ENV GOPATH=/
+RUN mkdir /app
+ADD . /app
 
-COPY ./ ./
+WORKDIR /app
 
 # install psql
 RUN apt-get update
@@ -13,7 +13,14 @@ RUN apt-get -y install postgresql-client
 RUN chmod +x wait-for-postgres.sh
 
 # build go app
+RUN mkdir /.bin
 RUN go mod download
-RUN go build -o app ./cmd/app/main.go
+RUN GOOS=linux CGO_ENABLED=0 go build -o ./.bin/app ./cmd/app/main.go
+
+FROM alpine:latest
+
+WORKDIR /root
+
+COPY --from=builder /app/.bin/app .
 
 CMD ["./app"]

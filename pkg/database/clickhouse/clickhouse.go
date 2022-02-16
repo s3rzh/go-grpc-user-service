@@ -3,6 +3,7 @@ package clickhouse
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 
@@ -26,6 +27,10 @@ func NewClickHouseDB(cfg Config) (driver.Conn, error) {
 			Username: cfg.Username,
 			Password: cfg.Password,
 		},
+		DialTimeout:     1 * time.Second,
+		MaxOpenConns:    4,
+		MaxIdleConns:    2,
+		ConnMaxLifetime: time.Hour,
 		Compression: &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
 		},

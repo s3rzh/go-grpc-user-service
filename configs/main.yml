@@ -3,27 +3,27 @@ port: "8080"
 db:
     username: "postgres"
     password: "qwerty"
-    host: "localhost" #pgdb
-    port: "5434" #5432
+    host: "pgdb" #pgdb #localhost
+    port: "5432" #5432 #5434
     name: "postgres"
     sslmode: "disable"
 
 cache:
-    host: "localhost"
-    port: "6381" #6379
+    host: "redis" #redis #localhost
+    port: "6379" #6379 #6381
     password: ""
     db: 0
 
 queue:
-    host: "localhost"
-    port: "5674" #5672
+    host: "rabbitmq" #rabbitmq #localhost #user_rabbitmq
+    port: "5672" #5672 #5674
     username: "guest"
     password: "guest"
     queuename: "UserQueue"
 
 clickhouse:
-    host: "127.0.0.1"
-    port: "9002" #9000
+    host: "clickhouse" #clickhouse #localhost #user_clickhouse
+    port: "9000" #9000 #9002
     username: "default"
     dbname: "db_user"
     password: ""

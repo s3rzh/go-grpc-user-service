@@ -5,6 +5,3 @@ clear:
 
 protoc:
 	protoc --proto_path=api/proto api/proto/*.proto --go_out=pkg/ --go-grpc_out=pkg/ --validate_out=lang=go:pkg/
-
-run:
-	go run cmd/app/main.go

@@ -1,12 +1,19 @@
-FROM golang:latest
+FROM golang:latest AS builder
 
-RUN go version
-ENV GOPATH=/
+RUN mkdir /app
+ADD . /app
 
-COPY ./ ./
+WORKDIR /app
 
 # build go logger
+RUN mkdir /.bin
 RUN go mod download
-RUN go build -o logger ./cmd/logger/main.go
+RUN GOOS=linux CGO_ENABLED=0 go build -o ./.bin/logger ./cmd/logger/main.go
+
+FROM alpine:latest
+
+WORKDIR /root
+
+COPY --from=builder /app/.bin/logger .
 
 CMD ["./logger"]
